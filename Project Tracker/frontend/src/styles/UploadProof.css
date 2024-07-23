@@ -1,0 +1,60 @@
+.wrapper {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFA07A; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.upload-proof {
+    width: 500px;
+    height: 220px;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    position: relative;
+    overflow: auto;
+}
+
+
+
+.upload-proof form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.upload-proof input[type="file"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.upload-proof .back-arrow {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    cursor: pointer;
+}
+
+.uploadButton{
+    margin-top: 15px;
+    width: 90px;
+    margin-left: 200px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+
+}
+
+.taskName{
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+

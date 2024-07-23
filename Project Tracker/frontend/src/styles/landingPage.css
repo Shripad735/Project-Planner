@@ -1,0 +1,95 @@
+/* project-tracker-frontend/src/components/LandingPage.css */
+.gradient-background {
+    background: linear-gradient(135deg, #9c11cb 0%, #2575fc 50%,#9c11cb 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white; 
+  }
+  
+  .landing-page h1 {
+    font-size: 3.5em;
+    margin: 0%;
+      overflow: hidden; 
+      white-space: nowrap; 
+      border-right: 4px solid white; 
+      width: 0; 
+      animation: typing 8s steps(40, end) infinite alternate, blink-caret 0.75s step-end infinite;
+    }
+    
+    @keyframes typing {
+      0%, 100% { width: 0; }
+      50% { width: 60%; }
+    }
+    
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: white; }
+    }
+  
+  
+  .landing-page p {
+    font-size: 2em;
+    margin: 15px;
+    margin-bottom: 30px;
+  
+  }
+  
+  .features {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+  }
+    
+  
+    
+  
+  
+     
+    .button-73 {
+      margin-top: 20px;
+      margin-left: 39px;
+      appearance: none;
+      background-color: #FFFFFF;
+      border-radius: 40em;
+      border-style: none;
+      box-shadow: #ADCFFF 0 -12px 6px inset;
+      box-sizing: border-box;
+      color: #000000;
+      cursor: pointer;
+      display: inline-block;
+      font-family: -apple-system,sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -.24px;
+      margin: 0;
+      outline: none;
+      padding: 1rem 1.3rem;
+      quotes: auto;
+      text-align: center;
+      text-decoration: none;
+      transition: all .15s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    
+    .button-73:hover {
+      background-color: #FFC229;
+      box-shadow: #FF6314 0 -6px 8px inset;
+      transform: scale(1.125);
+    }
+    
+    .button-73:active {
+      transform: scale(1.025);
+    }
+    
+    @media (min-width: 768px) {
+      .button-73 {
+        font-size: 1.5rem;
+        padding: .75rem 2rem;
+      }
+    }
+  

@@ -1,0 +1,104 @@
+
+.wrapper {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFA07A; /* LightSalmon background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for registration form */
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Increased shadow */
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Heading styles */
+h2 {
+    margin-bottom: 20px;
+    color: #FF4500; /* OrangeRed */
+    font-weight: bold;
+}
+
+/* Input field styles */
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"] {
+    width: calc(100% - 24px); /* Adjusted width */
+    padding: 10px; /* Smaller padding */
+    margin: 8px 0; /* Smaller margin */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Inner shadow */
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus {
+    outline: none;
+    border-color:#CD5C5C;/* IndianRed */
+}
+
+/* User type selection styles */
+.user-type-selection {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.user-type-option {
+    flex: 1;
+    padding: 15px 0;
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.user-type-option:hover {
+    background-color: #FF6347; /* Tomato */
+    color: white;
+}
+
+/* Button styles */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #FF6347; /* Tomato */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 6px 15px rgba(255, 99, 71, 0.5); /* Soft shadow */
+}
+
+/* Hover effect for button */
+button:hover {
+    background-color: #FF4500; /* OrangeRed */
+}
+
+/* Link styles */
+.login-link {
+    display: block;
+    margin-top: 20px;
+    color: #FF6347; /* Tomato */
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.login-link:hover {
+    color: #FF4500;/* OrangeRed */
+}

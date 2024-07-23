@@ -1,0 +1,39 @@
+.sidebar {
+    width: 15%;
+    background-color: #f4f4f4;
+    position: fixed;
+    right: 0;
+    top: 50px; /* Adjust this value based on your layout */
+    cursor: pointer;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.notification-dropdown {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    right: 10px; /* Adjust based on your layout */
+    top: 50px; /* Adjust based on your layout */
+    width: 200px; /* Adjust based on your needs */
+    z-index: 1000;
+}
+
+.notification-dropdown li {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-dropdown li:last-child {
+    border-bottom: none;
+}
