@@ -145,7 +145,7 @@ app.put('/users/:userid', verifyToken, (req, res) => {
 app.get('/tasks', verifyToken, (req, res) => {
   const userId = req.user.id;
 
-  const query = 'SELECT TaskId, TaskName FROM tasks WHERE Status = ? AND AssignedTo = ?';
+  const query = 'SELECT TaskId, TaskName , EndDate  FROM tasks WHERE Status = ? AND AssignedTo = ?';
   db.query(query, ['In Progress', userId], (err, results) => {
     if (err) {
       res.status(500).send(err);
@@ -171,9 +171,7 @@ const upload = multer({ storage: storage });
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const userId = req.body.userId;
   const taskId = req.body.taskId;
-  console.log(taskId);
   const filePath = req.file.path;
-  console.log(filePath);
 
   const query = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
   db.query(query, [taskId, filePath], (err, results) => {
@@ -188,12 +186,17 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
 
 
 // Fetch tasks assigned to the user
+// Get tasks for a user including uploaded proof details
 app.get('/tasks/:userId', verifyToken, (req, res) => {
   const { userId } = req.params;
   const query = `
-      SELECT t.TaskID, t.TaskName, t.Description, t.StartDate, t.EndDate, t.Status, u.username AS AssignedTo
+      SELECT 
+          t.TaskID, t.TaskName, t.Description, t.StartDate, t.EndDate, t.Status, 
+          u.username AS AssignedTo, 
+          cp.ProofID, cp.ProofFile, cp.Status AS ProofStatus , cp.SubmissionAt	AS SubmissionAt
       FROM tasks t
       JOIN users u ON t.AssignedTo = u.UserID
+      LEFT JOIN completionproofs cp ON t.TaskID = cp.TaskID
       WHERE t.AssignedTo = ?
   `;
 
@@ -205,6 +208,21 @@ app.get('/tasks/:userId', verifyToken, (req, res) => {
       res.json(results);
   });
 });
+
+// Endpoint to delete a proof file
+app.delete('/proofs/:proofId', verifyToken, (req, res) => {
+  const { proofId } = req.params;
+  const query = 'DELETE FROM completionproofs WHERE ProofID = ?';
+
+  db.query(query, [proofId], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(200).send('Proof file deleted successfully');
+  });
+});
+
 
 
 app.get('/pendingVerifications', verifyToken, (req, res) => {

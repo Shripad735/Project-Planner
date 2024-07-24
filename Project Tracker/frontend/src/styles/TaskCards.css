@@ -11,28 +11,44 @@
 .task-cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    justify-content: space-around;
+  }
+  
+  .task-card {
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     padding: 20px;
-}
-
-.task-card {
-    width: 200px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.task-card:hover {
-    transform: scale(1.05);
-}
-
-.wrapper .back-arrow {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    cursor: pointer;
-}
+    margin: 10px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s;
+  }
+  
+  .task-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .proof-details {
+    background: #e0f7fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .proof-details p {
+    margin: 5px 0;
+  }
+  
+  .proof-file-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .upload{
+    margin-left: 0; 
+  }
