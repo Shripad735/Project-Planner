@@ -13,7 +13,11 @@ const port = 3000;
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001', // Update with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(cookieParser());
 
 // Establish connectivity with database
@@ -169,6 +173,7 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const taskId = req.body.taskId;
   console.log(taskId);
   const filePath = req.file.path;
+  console.log(filePath);
 
   const query = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
   db.query(query, [taskId, filePath], (err, results) => {
@@ -180,84 +185,6 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   });
 });
 
-
-// Endpoint to get completion proofs
-app.get('/completion_proof/:userId', verifyToken, (req, res) => {
-  const userId = req.params.userId;
-
-  const query = 'SELECT completionProof FROM completion_proof WHERE userid = ?';
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error('Error retrieving completion proofs from the database:', err);
-      return res.status(500).json({ message: 'Failed to retrieve completion proofs', error: err });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'No completion proofs found for the user' });
-    }
-
-    const proofs = results.map(result => result.completionProof);
-    res.status(200).json({ proofs });
-  });
-});
-
-
-
-// Endpoint to download a specific proof
-app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const filepath = path.join(__dirname, 'uploads', filename);
-
-  fs.access(filepath, fs.constants.F_OK, (err) => {
-    if (err) {
-      console.error('File does not exist:', filepath);
-      return res.status(404).json({ message: 'File not found' });
-    }
-
-    res.download(filepath);
-  });
-});
-
-
-
-// Get uploaded proofs
-app.get('/uploaded-proofs', verifyToken, (req, res) => {
-  const query = `
-    SELECT cp.ProofID, cp.TaskID, cp.CompletionProof, cp.SubmissionAt, cp.Status, 
-           t.TaskName, t.StartDate, t.EndDate, u.username as AssignedUser
-    FROM completionProofs cp
-    JOIN tasks t ON cp.TaskID = t.TaskID
-    JOIN users u ON t.AssignedTo = u.UserID
-    WHERE t.AssignedTo = ?;
-  `;
-  
-  db.query(query, [req.user.id], (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-      return;
-    }
-    res.json(results);
-  });
-});
-
-// Update proof status
-app.put('/update-proof-status/:proofId', verifyToken, (req, res) => {
-  const { status } = req.body;
-  const { proofId } = req.params;
-
-  const query = 'UPDATE completionProofs SET Status = ? WHERE ProofID = ?';
-  
-  db.query(query, [status, proofId], (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-      return;
-    }
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: 'Proof not found' });
-    }
-    res.json({ message: 'Status updated successfully' });
-  });
-});
 
 
 // Fetch tasks assigned to the user
@@ -280,9 +207,88 @@ app.get('/tasks/:userId', verifyToken, (req, res) => {
 });
 
 
+app.get('/pendingVerifications', verifyToken, (req, res) => {
+  const userId = req.user.id; // Assuming userId is stored in the token and extracted by verifyToken middleware
+  const query = `
+    SELECT cp.ProofID, cp.TaskId, cp.ProofFile, cp.submissionAt, cp.Status,
+           t.TaskName, t.Description, t.StartDate, t.EndDate, u.username AS AssignedTo
+    FROM completionProofs cp
+    JOIN tasks t ON cp.TaskId = t.TaskId
+    JOIN users u ON t.AssignedTo = u.UserID
+    JOIN milestones m ON t.MilestoneID = m.MilestoneID
+    JOIN projects p ON m.ProjectID = p.ProjectID
+    WHERE p.CreatedBy = ? AND cp.Status = 'Pending'
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ message: 'No pending verifications' });
+      return;
+    }
+    res.json(results);
+  });
+});
 
 
+// Get completion proof details for a specific task
+app.get('/completionProofs/:taskId', verifyToken, (req, res) => {
+  const { taskId } = req.params;
+  const query = `
+    SELECT cp.ProofID, cp.TaskId, cp.ProofFile, cp.submissionAt, cp.Status, 
+           t.TaskName, t.Description, t.StartDate, t.EndDate, u.username AS AssignedTo
+    FROM completionProofs cp
+    JOIN tasks t ON cp.TaskId = t.TaskId
+    JOIN users u ON t.AssignedTo = u.UserID
+    WHERE cp.TaskId = ?
+  `;
 
+  db.query(query, [taskId], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ message: 'No proof found for this task' });
+      return;
+    }
+    res.json(results[0]);
+  });
+});
+
+
+// Update the status of a completion proof
+app.put('/completionProofs/:taskId/status', verifyToken, (req, res) => {
+  const { taskId } = req.params;
+  const { status } = req.body;
+
+  const query = 'UPDATE completionProofs SET Status = ? WHERE TaskId = ?';
+  db.query(query, [status, taskId], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.json({ message: 'Status updated successfully' });
+  });
+});
+
+
+app.get('/download/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, 'uploads', filename);
+
+  fs.access(filepath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error('File does not exist:', filepath);
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    res.download(filepath);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

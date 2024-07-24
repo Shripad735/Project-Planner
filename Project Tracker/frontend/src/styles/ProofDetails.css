@@ -1,0 +1,82 @@
+/* ProofDetails.css */
+
+.wrapper {
+    background-color: #FFA07A;
+  }
+  
+  .proof-details-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .proof-details-card {
+    background-color: #cfdbe8;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 700px;
+    height: auto;
+  }
+  
+  .proof-details-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .proof-info {
+    margin-bottom: 1rem;
+  }
+  
+  .proof-file-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .proof-file-link:hover {
+    color: #0056b3;
+  }
+  
+  .status-select-container {
+    margin-bottom: 1rem;
+  }
+  
+  .status-select-label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+  
+  .status-select {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+  }
+  
+  .submit-button {
+    background-color: #199406;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 232px;
+    margin-left: 35%;
+    position: relative;
+  }
+  
+  .submit-button:hover {
+    background-color: #18b300;
+  }
+  
+  .wrapper .back-arrow {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    cursor: pointer;
+}
