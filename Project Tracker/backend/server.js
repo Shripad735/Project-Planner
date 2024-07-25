@@ -145,8 +145,8 @@ app.put('/users/:userid', verifyToken, (req, res) => {
 app.get('/tasks', verifyToken, (req, res) => {
   const userId = req.user.id;
 
-  const query = 'SELECT TaskId, TaskName , EndDate  FROM tasks WHERE Status = ? AND AssignedTo = ?';
-  db.query(query, ['In Progress', userId], (err, results) => {
+  const query = 'SELECT TaskId, TaskName, EndDate FROM tasks WHERE Status IN (?, ?) AND AssignedTo = ?';
+  db.query(query, ['In Progress', 'Overdue', userId], (err, results) => {
     if (err) {
       res.status(500).send(err);
       return;
@@ -154,6 +154,8 @@ app.get('/tasks', verifyToken, (req, res) => {
     res.json(results);
   });
 });
+
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

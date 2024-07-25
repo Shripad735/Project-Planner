@@ -100,7 +100,7 @@ const TaskCards = () => {
               </div>
             )}
 
-            {task.Status === 'In Progress' && task.ProofStatus === 'Rejected'  && (
+            {(task.Status === 'In Progress' || task.Status === 'Overdue' ) && task.ProofStatus === 'Rejected'  && (
               <button onClick={() => navigate(`/upload-proof/${username}`)}  className="upload" > Upload Proof <FaArrowRight size={10}/></button>
             )}
           </div>
