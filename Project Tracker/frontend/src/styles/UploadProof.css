@@ -10,7 +10,7 @@
 
 .upload-proof {
     width: 500px;
-    height: 220px;
+    height: auto; /* Adjust height to fit content */
     padding: 2rem;
     background-color: #f9f9f9;
     border-radius: 10px;
@@ -19,8 +19,6 @@
     position: relative;
     overflow: auto;
 }
-
-
 
 .upload-proof form {
     display: flex;
@@ -35,6 +33,11 @@
     border-radius: 4px;
 }
 
+.upload-proof select{
+   height: 50px;
+   font-size: large;
+}
+
 .upload-proof .back-arrow {
     position: absolute;
     top: 1rem;
@@ -42,19 +45,18 @@
     cursor: pointer;
 }
 
-.uploadButton{
+.uploadButton {
     margin-top: 15px;
     width: 90px;
     margin-left: 200px;
     margin-right: 0px;
     margin-bottom: 0px;
-
 }
 
-.taskName{
+.taskName {
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    
 }
-

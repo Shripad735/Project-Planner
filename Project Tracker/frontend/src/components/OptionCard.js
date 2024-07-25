@@ -7,7 +7,7 @@ const iconMap = {
     "Create New Project": <FaPlus size={50} />,
     "Manage Existing Projects": <FaTasks size={50} />,
     "Pending Verification of Tasks": <FaCheckCircle size={50} />,
-    "View Assigned Tasks": <FaTasks size={50} />,
+    "View Assigned Tasks": <FaTasks FaArrowLeft/>,
     "View Rejected Tasks": <FaTimesCircle size={50} />,
     "Submit Completion Proofs": <FaUpload size={50} />
 };
