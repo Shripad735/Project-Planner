@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MilestoneForm from './MilestoneForm';
 import TaskForm from './TaskForm';
 import '../styles/CreateProject.css';
+import Cookies from 'js-cookie';
 
 const CreateProject = () => {
   const [project, setProject] = useState({ title: '', description: '', startDate: '', endDate: '' });
@@ -47,13 +48,33 @@ const CreateProject = () => {
 
   const handleFinalSubmit = () => {
     const fullProject = { ...project, milestones, tasks };
-    // Replace with actual API call when backend is ready
-    console.log('Project created:', fullProject);
-    alert('Project created successfully');
-    setProject({ title: '', description: '', startDate: '', endDate: '' });
-    setMilestones([]);
-    setTasks({});
-    setIsProjectComplete(false);
+    const token = Cookies.get('token');
+
+    fetch('/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(fullProject)
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.text().then(text => { throw new Error(text) });
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Project created:', data);
+      alert('Project created successfully');
+      setProject({ title: '', description: '', startDate: '', endDate: '' });
+      setMilestones([]);
+      setTasks({});
+      setIsProjectComplete(false);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   };
 
   const today = new Date().toISOString().split('T')[0]; // Get today's date in yyyy-mm-dd format
