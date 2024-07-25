@@ -65,12 +65,12 @@ const UploadProof = () => {
     navigate(`/dashboard/${username}`);
   };
 
+ 
   const handleTaskChange = (e) => {
     const selectedTaskId = e.target.value;
     setSelectedTaskId(selectedTaskId);
     const selectedTaskEndDate = tasks.find(task => task) ;
     setSelectedTaskEndDate(selectedTaskEndDate.EndDate);
-    console.log(selectedTaskEndDate.EndDate);
 
     if (selectedTaskEndDate.EndDate) {
       const timeDiff = new Date(selectedTaskEndDate.EndDate) - new Date();
@@ -84,10 +84,17 @@ const UploadProof = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!file || !selectedTaskId) {
+      alert('Please select a file and a task.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('taskId', selectedTaskId);
     formData.append('userId', userId);
+
     try {
       const response = await fetch('http://localhost:3000/upload', {
         method: 'POST',
@@ -97,15 +104,17 @@ const UploadProof = () => {
         body: formData
       });
 
+      const result = await response.json();
+
       if (response.ok) {
         alert('File uploaded successfully');
         navigate(`/dashboard/${username}`);
       } else {
-        alert('File upload failed');
+        alert(result.message || 'File upload failed');
       }
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('File upload failed');
+      alert('An error occurred while uploading the file.');
     }
   };
 

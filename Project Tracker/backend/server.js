@@ -155,7 +155,6 @@ app.get('/tasks', verifyToken, (req, res) => {
   });
 });
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -173,15 +172,50 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const taskId = req.body.taskId;
   const filePath = req.file.path;
 
-  const query = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
-  db.query(query, [taskId, filePath], (err, results) => {
+  // Check if there's any entry for this TaskId in completionProofs
+  const checkExistingQuery = 'SELECT * FROM completionProofs WHERE TaskId = ?';
+  db.query(checkExistingQuery, [taskId], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+
+    if (results.length > 0) {
+      const proof = results[0];
+      if (proof.Status === 'Rejected') {
+        // Delete the rejected proof
+        const deleteRejectedQuery = 'DELETE FROM completionProofs WHERE TaskId = ?';
+        db.query(deleteRejectedQuery, [taskId], (deleteErr) => {
+          if (deleteErr) {
+            res.status(500).send(deleteErr);
+            return;
+          }
+
+          // Insert the new proof after deleting the rejected one
+          insertNewProof(taskId, filePath, res);
+        });
+      } else {
+        // An entry exists and is not rejected, do not allow upload
+        res.status(400).json({ message: 'Proof for this task has already been submitted.' });
+      }
+    } else {
+      // No entry exists, proceed to insert the new proof
+      insertNewProof(taskId, filePath, res);
+    }
+  });
+});
+
+function insertNewProof(taskId, filePath, res) {
+  const insertQuery = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
+  db.query(insertQuery, [taskId, filePath], (err, results) => {
     if (err) {
       res.status(500).send(err);
       return;
     }
     res.status(201).json({ message: 'Proof uploaded successfully', proofId: results.insertId });
   });
-});
+}
+
 
 
 

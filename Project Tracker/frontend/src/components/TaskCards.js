@@ -81,7 +81,7 @@ const TaskCards = () => {
             <p><b>Deadline:</b> {`${new Date(task.StartDate).toLocaleDateString()} - ${new Date(task.EndDate).toLocaleDateString()}`}</p>
             <p><b>Status:</b> {task.Status}</p>
             <p><b>Description:</b> {task.Description}</p>
-
+            
             {task.ProofID && (
               <div className="proof-details">
                  <a
@@ -100,11 +100,12 @@ const TaskCards = () => {
               </div>
             )}
 
-            {task.Status === 'In Progress' && (
+            {task.Status === 'In Progress' && task.ProofStatus === 'Rejected'  && (
               <button onClick={() => navigate(`/upload-proof/${username}`)}  className="upload" > Upload Proof <FaArrowRight size={10}/></button>
             )}
           </div>
         ))}
+           
       </div>
     </div>
   );
