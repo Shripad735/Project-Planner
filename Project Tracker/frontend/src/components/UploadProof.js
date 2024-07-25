@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { FaArrowLeft } from 'react-icons/fa';
 import '../styles/UploadProof.css';
 
@@ -72,10 +72,19 @@ const UploadProof = () => {
     setSelectedTaskEndDate(selectedTaskEndDate);
 
     if (selectedTaskEndDate) {
-      const timeDiff = new Date(selectedTaskEndDate) - new Date();
-      const daysLeft = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hoursLeft = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      setTimeLeft(`${daysLeft} days and ${hoursLeft} hours left`);
+      const endDate = new Date(selectedTaskEndDate);
+      const currentDate = new Date();
+      const timeDiff = endDate - currentDate;
+
+      if (timeDiff < 0) {
+        const daysOverdue = Math.floor(Math.abs(timeDiff) / (1000 * 60 * 60 * 24));
+        const hoursOverdue = Math.floor((Math.abs(timeDiff) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        setTimeLeft(`Overdue by ${daysOverdue} days and ${hoursOverdue} hours`);
+      } else {
+        const daysLeft = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hoursLeft = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        setTimeLeft(`${daysLeft} days and ${hoursLeft} hours left`);
+      }
     } else {
       setTimeLeft('');
     }
@@ -141,7 +150,9 @@ const UploadProof = () => {
           {selectedTaskEndDate && (
             <>
               <p><b>Due Date:</b> {new Date(selectedTaskEndDate).toLocaleString()}</p>
-              <p><b>Time Left:</b> {timeLeft}</p>
+              <p style={{ color: new Date(selectedTaskEndDate) < new Date() ? 'red' : 'green' }}>
+                <b>Time Left:</b> {timeLeft}
+              </p>
             </>
           )}
           <button type="submit" className='uploadButton'>Upload</button>

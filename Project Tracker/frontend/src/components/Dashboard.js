@@ -65,7 +65,6 @@ const Dashboard = () => {
                     <div className="option-cards">
                         <OptionCard title="View Assigned Tasks" description="View all deliverables in a single place" path={`/tasksAssigned/${username}`} />
                         <OptionCard title="Submit Completion Proofs" description="Make submissions for your completed tasks" path={`/upload-proof/${username}`} />
-                        <OptionCard title="View Rejected Tasks" description="Verify tasks that have been rejected" />
                     </div>
                 </div>
             </div>
