@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { FaArrowLeft } from 'react-icons/fa';
 import '../styles/UploadProof.css';
 
@@ -65,15 +65,14 @@ const UploadProof = () => {
     navigate(`/dashboard/${username}`);
   };
 
- 
   const handleTaskChange = (e) => {
     const selectedTaskId = e.target.value;
     setSelectedTaskId(selectedTaskId);
-    const selectedTaskEndDate = tasks.find(task => task) ;
-    setSelectedTaskEndDate(selectedTaskEndDate.EndDate);
+    const selectedTaskEndDate = e.target.selectedOptions[0].dataset.duedate;
+    setSelectedTaskEndDate(selectedTaskEndDate);
 
-    if (selectedTaskEndDate.EndDate) {
-      const timeDiff = new Date(selectedTaskEndDate.EndDate) - new Date();
+    if (selectedTaskEndDate) {
+      const timeDiff = new Date(selectedTaskEndDate) - new Date();
       const daysLeft = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
       const hoursLeft = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       setTimeLeft(`${daysLeft} days and ${hoursLeft} hours left`);
@@ -134,7 +133,7 @@ const UploadProof = () => {
           >
             <option value="" className='taskName'>Select Task</option>
             {tasks.map(task => (
-              <option key={task.TaskId} value={task.TaskId}>
+              <option key={task.TaskId} value={task.TaskId} data-duedate={task.EndDate}>
                 {task.TaskName}
               </option>
             ))}
