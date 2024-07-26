@@ -395,7 +395,87 @@ app.get('/tasks/:userId', verifyToken, (req, res) => {
   });
 });
 
+// Function to get user ID by email
+const getIdByEmail = (email, callback) => {
+  const query = 'SELECT UserID FROM users WHERE Email = ?';
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      return callback(err, null);
+    }
+    if (results.length === 0) {
+      return callback(new Error('User not found'), null);
+    }
+    callback(null, results[0].UserID);
+  });
+};
 
+// To insert new projects, milestones & tasks
+app.post('/projects', verifyToken, (req, res) => {
+  const projectData = req.body;
+
+  getIdByEmail(req.user.useremail, (err, userID) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    db.beginTransaction(err => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      const projectQuery = `INSERT INTO projects (projectid, projectname, description, startdate, enddate, createdby, status) VALUES (NULL, ?, ?, ?, ?, ?, 'Not Started')`;
+      db.query(projectQuery, [projectData.title, projectData.description, projectData.startDate, projectData.endDate, userID], (err, result) => {
+        if (err) {
+          return db.rollback(() => {
+            res.status(500).json({ error: err.message });
+          });
+        }
+
+        const projectId = result.insertId;
+        const milestonePromises = projectData.milestones.map(milestone => {
+          return new Promise((resolve, reject) => {
+            const milestoneQuery = `INSERT INTO milestones (milestoneid, projectid, seq, milestonename, description, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, 'Not Started')`;
+            db.query(milestoneQuery, [projectId, milestone.name, milestone.description, milestone.startDate, milestone.endDate], (err, result) => {
+              if (err) return reject(err);
+
+              const milestoneId = result.insertId;
+              const taskPromises = (projectData.tasks[milestone.name] || []).map(task => {
+                return new Promise((resolve, reject) => {
+                  getIdByEmail(task.assignedTo, (err, assignedUserId) => {
+                    if (err) return reject(err);
+
+                    const taskQuery = `INSERT INTO tasks (taskid, milestoneid, seq, taskname, description, assignedto, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, ?, 'Not Started')`;
+                    db.query(taskQuery, [milestoneId, task.name, task.description, assignedUserId, task.startDate, task.endDate], (err, result) => {
+                      if (err) return reject(err);
+                      resolve();
+                    });
+                  });
+                });
+              });
+
+              Promise.all(taskPromises).then(resolve).catch(reject);
+            });
+          });
+        });
+
+        Promise.all(milestonePromises)
+          .then(() => {
+            db.commit(err => {
+              if (err) {
+                return db.rollback(() => {
+                  res.status(500).json({ error: err.message });
+                });
+              }
+              res.status(201).json({ message: 'Project created successfully' });
+            });
+          })
+          .catch(err => {
+            db.rollback(() => {
+              res.status(500).json({ error: err.message });
+            });
+          });
+      });
+    });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
