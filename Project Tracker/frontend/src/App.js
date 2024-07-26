@@ -10,6 +10,7 @@ import UploadProof from './components/UploadProof';
 import TaskCards from './components/TaskCards';
 import ProofDetails from './components/ProofDetails';
 import PendingVerifications from './components/PendingVerifications';
+import CreateProject from './components/CreateProject';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/tasksAssigned/:username" element={<TaskCards />} />
         <Route path="/proof-details/:taskId" element={<ProofDetails />} />
         <Route path="/pending-verifications/:username" element={<PendingVerifications />} />
+        <Route path="/create-project" element={<CreateProject />} />
         <Route path="*" element={<Navigate to="/LandingPage" />} />
         {/* Other routes can be added here */}
       </Routes>
