@@ -14,6 +14,7 @@ const UploadProof = () => {
   const [userId, setUserId] = useState(null);
   const [selectedTaskEndDate, setSelectedTaskEndDate] = useState('');
   const [timeLeft, setTimeLeft] = useState('');
+  const [customFileName, setCustomFileName] = useState('');
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -93,13 +94,14 @@ const UploadProof = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file || !selectedTaskId) {
-      alert('Please select a file and a task.');
+    if (!file || !selectedTaskId || !customFileName) {
+      alert('Please select a file, a task, and enter a file name.');
       return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('fileName', customFileName); // Adding custom file name to form data
     formData.append('taskId', selectedTaskId);
     formData.append('userId', userId);
 
@@ -135,6 +137,13 @@ const UploadProof = () => {
         <h2>Upload Completion Proof</h2>
         <form onSubmit={handleSubmit}>
           <input type="file" onChange={handleFileChange} required />
+          <input 
+            type="text" 
+            placeholder="Enter custom file name" 
+            value={customFileName} 
+            onChange={(e) => setCustomFileName(e.target.value)} 
+            required 
+          />
           <select
             value={selectedTaskId}
             onChange={handleTaskChange}

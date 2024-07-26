@@ -13,6 +13,7 @@ const port = 3000;
 
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
   origin: 'http://localhost:3001', // Update with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -156,14 +157,20 @@ app.get('/tasks', verifyToken, (req, res) => {
 });
 
 
+// Updated storage configuration
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
-    cb(null, uniqueSuffix);
+    process.nextTick(() => {
+      const fileExtension = path.extname(file.originalname); 
+      const customName = req.body.fileName || file.originalname; 
+      console.log(req.body.fileName); 
+      const fileName = `${customName}${fileExtension}`;
+      cb(null, fileName);
+    });
   }
 });
 
@@ -172,7 +179,13 @@ const upload = multer({ storage: storage });
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const userId = req.body.userId;
   const taskId = req.body.taskId;
+  const fileExtension = path.extname(req.file.originalname);
+  req.body.fileName = `${req.body.fileName}${fileExtension}`;
+  req.file.path = `uploads\\${req.body.fileName}`;
   const filePath = req.file.path;
+  const fileName = req.body.fileName; 
+  console.log(req.file);
+  console.log(req.body);
 
   // Check if there's any entry for this TaskId in completionProofs
   const checkExistingQuery = 'SELECT * FROM completionProofs WHERE TaskId = ?';
@@ -194,7 +207,7 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
           }
 
           // Insert the new proof after deleting the rejected one
-          insertNewProof(taskId, filePath, res);
+          insertNewProof(taskId, fileName, res);
         });
       } else {
         // An entry exists and is not rejected, do not allow upload
@@ -202,14 +215,14 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
       }
     } else {
       // No entry exists, proceed to insert the new proof
-      insertNewProof(taskId, filePath, res);
+      insertNewProof(taskId, fileName, res);
     }
   });
 });
 
-function insertNewProof(taskId, filePath, res) {
+function insertNewProof(taskId, fileName, res) {
   const insertQuery = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
-  db.query(insertQuery, [taskId, filePath], (err, results) => {
+  db.query(insertQuery, [taskId, fileName], (err, results) => {
     if (err) {
       res.status(500).send(err);
       return;
@@ -217,8 +230,6 @@ function insertNewProof(taskId, filePath, res) {
     res.status(201).json({ message: 'Proof uploaded successfully', proofId: results.insertId });
   });
 }
-
-
 
 
 // Fetch tasks assigned to the user
