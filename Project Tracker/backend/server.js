@@ -157,20 +157,13 @@ app.get('/tasks', verifyToken, (req, res) => {
 });
 
 
-// Updated storage configuration
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    process.nextTick(() => {
-      const fileExtension = path.extname(file.originalname); 
-      const customName = req.body.fileName || file.originalname; 
-      console.log(req.body.fileName); 
-      const fileName = `${customName}${fileExtension}`;
-      cb(null, fileName);
-    });
+    cb(null, file.originalname);
   }
 });
 
@@ -179,13 +172,9 @@ const upload = multer({ storage: storage });
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const userId = req.body.userId;
   const taskId = req.body.taskId;
-  const fileExtension = path.extname(req.file.originalname);
-  req.body.fileName = `${req.body.fileName}${fileExtension}`;
-  req.file.path = `uploads\\${req.body.fileName}`;
-  const filePath = req.file.path;
-  const fileName = req.body.fileName; 
-  console.log(req.file);
-  console.log(req.body);
+  const fileName = req.file.originalname;
+  const filePath = `uploads/${fileName}`;
+
 
   // Check if there's any entry for this TaskId in completionProofs
   const checkExistingQuery = 'SELECT * FROM completionProofs WHERE TaskId = ?';
@@ -198,20 +187,25 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
     if (results.length > 0) {
       const proof = results[0];
       if (proof.Status === 'Rejected') {
-        // Delete the rejected proof
-        const deleteRejectedQuery = 'DELETE FROM completionProofs WHERE TaskId = ?';
-        db.query(deleteRejectedQuery, [taskId], (deleteErr) => {
-          if (deleteErr) {
-            res.status(500).send(deleteErr);
+        // Update the existing record and set Status to 'Pending'
+        const updateQuery = 'UPDATE completionProofs SET ProofFile = ?, submissionAt = NOW(), Status = ? WHERE TaskId = ?';
+        db.query(updateQuery, [fileName, 'Pending', taskId], (updateErr) => {
+          if (updateErr) {
+            res.status(500).send(updateErr);
             return;
           }
-
-          // Insert the new proof after deleting the rejected one
-          insertNewProof(taskId, fileName, res);
+          res.status(200).json({ message: 'Proof updated and status set to Pending.' });
         });
       } else {
-        // An entry exists and is not rejected, do not allow upload
-        res.status(400).json({ message: 'Proof for this task has already been submitted.' });
+        // Update the existing record without changing the status
+        const updateQuery = 'UPDATE completionProofs SET ProofFile = ?, submissionAt = NOW() WHERE TaskId = ?';
+        db.query(updateQuery, [fileName, taskId], (updateErr) => {
+          if (updateErr) {
+            res.status(500).send(updateErr);
+            return;
+          }
+          res.status(200).json({ message: 'Proof updated successfully.' });
+        });
       }
     } else {
       // No entry exists, proceed to insert the new proof
@@ -221,8 +215,8 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
 });
 
 function insertNewProof(taskId, fileName, res) {
-  const insertQuery = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt) VALUES (?, ?, NOW())';
-  db.query(insertQuery, [taskId, fileName], (err, results) => {
+  const insertQuery = 'INSERT INTO completionProofs (TaskId, ProofFile, submissionAt, Status) VALUES (?, ?, NOW(), ?)';
+  db.query(insertQuery, [taskId, fileName, 'Pending'], (err, results) => {
     if (err) {
       res.status(500).send(err);
       return;
@@ -230,6 +224,7 @@ function insertNewProof(taskId, fileName, res) {
     res.status(201).json({ message: 'Proof uploaded successfully', proofId: results.insertId });
   });
 }
+
 
 
 // Fetch tasks assigned to the user

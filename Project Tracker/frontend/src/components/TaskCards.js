@@ -94,13 +94,13 @@ const TaskCards = () => {
             </a>
                 <p><b>Proof Status:</b> {task.ProofStatus}</p>
                 <p><b>Submitted On:</b> {new Date(task.SubmissionAt).toLocaleString()}</p>
-                {task.ProofStatus === 'Rejected' && (
+                {(task.ProofStatus === 'Rejected' || task.ProofStatus === 'Pending' ) && (
                   <button onClick={() => handleDeleteProof(task.ProofID)} className="upload">Delete Proof</button>
                 )}
               </div>
             )}
 
-            {(task.Status === 'In Progress' || task.Status === 'Overdue' ) && task.ProofStatus === 'Rejected'  && (
+            {(task.Status === 'In Progress' || task.Status === 'Overdue' )   && (
               <button onClick={() => navigate(`/upload-proof/${username}`)}  className="upload" > Upload Proof <FaArrowRight size={10}/></button>
             )}
           </div>
