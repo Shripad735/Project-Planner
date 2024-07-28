@@ -70,9 +70,20 @@ const ProofDetails = () => {
     navigate(`/pending-verifications/${username}`);
   };
 
+  const decodeBase64 = (str) => {
+    try {
+      return atob(str);
+    } catch (e) {
+      console.error('Failed to decode base64 string:', e);
+      return null;
+    }
+  };
+
   if (!proofDetails) {
     return <div>Loading...</div>;
   }
+
+  const decodedProofFile = decodeBase64(proofDetails.ProofFile);
 
   return (
     <div className='wrapper'>
@@ -87,12 +98,12 @@ const ProofDetails = () => {
             <p><b>Submitted by:</b> {proofDetails.AssignedTo}</p>
             <p><b>Submitted at:</b> {new Date(proofDetails.submissionAt).toLocaleString()}</p>
             <a
-              href={`http://localhost:3000/download/${proofDetails.ProofFile}`}
+              href={`http://localhost:3000/download/${decodedProofFile}`}
               target="_blank"
               rel="noopener noreferrer"
               className="proof-file-link"
             >
-              Download: {proofDetails.ProofFile}
+              Download: {decodedProofFile ? decodedProofFile : 'No file available'}
             </a>
           </div>
           <div className="status-select-container">

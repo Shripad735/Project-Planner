@@ -172,7 +172,7 @@ const upload = multer({ storage: storage });
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   const userId = req.body.userId;
   const taskId = req.body.taskId;
-  const fileName = req.file.originalname;
+  const fileName = btoa(req.file.originalname);
   const filePath = `uploads/${fileName}`;
 
 
