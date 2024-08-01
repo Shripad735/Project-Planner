@@ -58,6 +58,9 @@ const LoginPage = () => {
           />
           <button type="submit" style={{ marginLeft: '0px' }}>Login</button>
         </form>
+        <Link to="/forgot-password" className="forgot-password-link">
+          Forgot Password?
+        </Link>
         <Link to="/register" className="register-link">
           Don't have an account? Register here
         </Link>

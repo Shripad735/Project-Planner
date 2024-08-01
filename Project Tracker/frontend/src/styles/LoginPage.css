@@ -80,3 +80,18 @@ button:hover {
 .register-link:hover {
     color: #FF4500; /* OrangeRed */
 }
+
+.forgot-password-link{
+    display: block;
+    margin-top: 20px;
+    color: #FF6347; /* Tomato */
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.success {
+    color: green;
+    margin-top: 10px;
+  }

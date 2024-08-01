@@ -11,6 +11,8 @@ import TaskCards from './components/TaskCards';
 import ProofDetails from './components/ProofDetails';
 import PendingVerifications from './components/PendingVerifications';
 import CreateProject from './components/CreateProject';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
         <Route path="/pending-verifications/:username" element={<PendingVerifications />} />
         <Route path="/create-project" element={<CreateProject />} />
         <Route path="*" element={<Navigate to="/LandingPage" />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         {/* Other routes can be added here */}
       </Routes>
     </Router>

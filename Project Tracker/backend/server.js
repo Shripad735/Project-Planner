@@ -10,6 +10,9 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = 3000;
+const { sendOTP, verifyOtp, resetPassword } = require('./controllers/emailController');
+
+
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -24,9 +27,9 @@ app.use(cookieParser());
 // Establish connectivity with database
 const db = mysql.createConnection({
   host: 'localhost',
-  port: 3307,
+  port: 3306,
   user: 'root',
-  password: '',
+  password: 'admin123',
   database: 'projectplanner'
 });
 
@@ -472,6 +475,12 @@ app.post('/projects', verifyToken, (req, res) => {
   });
 });
 
+app.post('/forgotPassword', sendOTP);
+app.post('/verifyOtp', verifyOtp);
+app.post('/resetPassword', resetPassword);
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
+
