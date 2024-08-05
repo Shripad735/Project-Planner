@@ -99,8 +99,80 @@ exports.sendOTP = expressAsyncHandler(async (req, res) => {
       from: process.env.SMTP_MAIL,
       to: email,
       subject: 'Password Reset OTP',
-      text: `Your OTP for password reset is: ${otp}. This OTP will expire in 10 minutes.`,
-      html: `<p>Your OTP for password reset is: <strong>${otp}</strong></p><p>This OTP will expire in 10 minutes.</p>`,
+      html: `
+         <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Reset OTP</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #34495e;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #eff7b8;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo {
+      max-width: 150px;
+      height: auto;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .otp-container {
+        background-color: #2c3e50;
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Password Reset Request</h1>
+    </div>
+    <p>Hello,</p>
+    <p>We received a request to reset your password for your Project Tracker account. To proceed with resetting your password, please use the following One-Time Password (OTP):</p>
+    <div class="otp-container">
+      ${otp}
+    </div>
+    <p>This OTP is valid for the next 10 minutes. If you did not request a password reset, please ignore this email or contact our support team immediately.</p>
+    <p>For security reasons, please do not share this OTP with anyone.</p>
+    <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+    <p>Best regards,<br>The Project Tracker Team</p>
+    <div class="footer">
+      <p>&copy; ${new Date().getFullYear()} Project Tracker. All rights reserved.</p>
+      <p>This is an automated message, please do not reply to this email.</p>
+    </div>
+  </div>
+</body>
+</html>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -111,6 +183,7 @@ exports.sendOTP = expressAsyncHandler(async (req, res) => {
     res.status(500).json({ message: 'Failed to send OTP. Please try again later.' });
   }
 });
+
 
 exports.verifyOtp = expressAsyncHandler(async (req, res) => {
   const { email, otp } = req.body;
