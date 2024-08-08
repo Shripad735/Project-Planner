@@ -1,0 +1,75 @@
+.project {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 15px;
+  transition: transform 0.3s;
+  max-width: 800px; /* Set a maximum width */
+  width: 100%; /* Ensure it takes full width available */
+  margin: 0 auto 15px auto; /* Center the project block horizontally and add bottom margin */
+}
+
+/* Center the h2 title */
+.existing-projects-container h2 {
+  text-align: center; /* Center text horizontally */
+  margin-bottom: 20px; /* Add some space below the title */
+}
+
+.project:hover {
+  transform: translateY(-5px);
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.project-info {
+  flex: 1;
+}
+
+.project-link {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.project-link:hover {
+  text-decoration: underline;
+}
+
+.project-description {
+  font-size: 1em;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.project-status {
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.project-dates {
+  font-size: 0.9em;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+/* Adjusted styles for project-progress */
+.project-progress-wrapper {
+  display: flex;
+  align-items: left; /* Vertically center the chart */
+  justify-content: left; /* Center the chart horizontally if needed */
+  width: 200px; /* Ensure there's enough space for the chart */
+}
+
+.project-progress {
+  width: 150px; /* Adjust as needed */
+  height: 150px; /* Adjust as needed */
+  margin-left: 10px; /* Adjust this value to control spacing */
+}

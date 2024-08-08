@@ -50,7 +50,7 @@ const Dashboard = () => {
                     <h2>Welcome to Your Dashboard</h2>
                     <div className="option-cards">
                         <OptionCard title="Create New Project" description="Start a new project and track its progress." path={`/create-project`}/>
-                        <OptionCard title="Manage Existing Projects" description="View and manage your existing projects." />
+                        <OptionCard title="Manage Existing Projects" description="View and manage your existing projects." path={`/existing-project/${username}`} />
                         <OptionCard title="Pending Verification of Tasks" description="Verify tasks that are pending approval." path={`/pending-verifications/${username}`}/>
                     </div>
                 </div>

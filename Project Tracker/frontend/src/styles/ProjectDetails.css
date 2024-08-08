@@ -1,0 +1,256 @@
+/* Container for project details */
+.project-details-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 800px; /* Added to limit the width */
+  margin: 20px auto; /* Center the container */
+}
+
+/* Project title styling */
+.project-details-container h2 {
+  margin-top: 0;
+  font-size: 1.5em; /* Reduced font size */
+  color: #333;
+}
+
+/* General paragraph styling */
+.project-details-container p {
+  margin: 5px 0;
+  font-size: 1em;
+  color: #555;
+}
+
+/* Milestone heading styling */
+.project-details-container h3 {
+  margin-top: 20px;
+  font-size: 1.2em; /* Reduced font size */
+  color: #444;
+}
+
+/* List styling */
+.project-details-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* List item styling */
+.project-details-container li {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Milestone title styling */
+.project-details-container li h2 {
+  margin: 10px 0 5px;
+  font-size: 1.2em; /* Reduced font size */
+  color: #333;
+}
+
+/* General paragraph styling within list items */
+.project-details-container li p {
+  margin: 5px 0;
+  font-size: 0.95em;
+  color: #666;
+}
+
+/* Task list styling */
+.project-details-container li ul {
+  margin-top: 10px;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+/* Task item styling */
+.project-details-container li ul li {
+  margin-bottom: 10px;
+}
+
+/* Task title styling */
+.project-details-container li ul li p {
+  margin: 2px 0;
+  font-size: 0.9em;
+  color: #555;
+  
+}
+
+/* Edit button styling */
+.edit-button {
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Milestone and Task header styling */
+.milestone-header,
+.task-header {
+  display: flex;
+  align-items: center;
+}
+
+.milestone-header h2,
+.task-header p {
+  margin: 0;
+  flex-grow: 1;
+  font-size: 1.5em; /* Reduced font size */
+}
+
+/* Timeline container */
+.timeline-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Make the timeline container relative for absolute positioning of end date */
+}
+
+/* Start date styling */
+.timeline-start-date {
+  margin-bottom: 20px; /* Space between start date and timeline */
+  font-weight: bold;
+  color: #333;
+ margin-right: 90px;
+ font-size: larger;
+  
+}
+
+/* Timeline date styling */
+.timeline-date {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 1em; /* Reduced font size */
+}
+
+/* Timeline styling */
+#timeline {
+  position: relative;
+  padding: 20px 0;
+  list-style: none;
+  width: 80%; /* Adjust width as needed */
+  border-left: 6px solid #007bff; /* Increased border width */
+  margin-left: 140px; /* Shift timeline to the right */
+  width: 250px;
+}
+
+/* Timeline item styling */
+.timeline-item {
+  position: relative;
+  margin: 20px 0;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Expanded timeline item styling */
+.timeline-item.expanded {
+  padding: 20px;
+}
+
+/* Timeline icon (stars for milestones) styling */
+.timeline-icon {
+  position: absolute;
+  left: -12px; /* Adjust to align star with border-left */
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+  margin-right: 20px;
+  top: 50%; /* Center the star vertically */
+  transform: translateY(-70%); /* Adjust vertical alignment */
+}
+
+/* Star icon for milestones */
+.timeline-icon.milestone-icon {
+  font-size: 3em; /* Reduced size */
+  content: "\2605"; /* Unicode star character */
+  transform: translateX(-54%);
+}
+
+/* Milestone status color and opacity */
+.milestone-icon.completed {
+  color: #28a745; /* Green */
+}
+
+.milestone-icon.in-progress {
+  color: #ffc107; /* Yellow */
+}
+
+.milestone-icon.not-started {
+  color: #dc3545; /* Red */
+}
+
+/* Dot icon for tasks */
+.timeline-icon.task-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 0.9em; /* Reduced font size */
+}
+
+/* Timeline content styling */
+.timeline-content {
+  flex: 1;
+}
+
+
+
+/* Animation styling */
+.animate-it {
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out;
+}
+
+/* End date container styling */
+.timeline-end-date {
+  margin-top: 20px; /* Add margin to space it from the timeline */
+  font-weight: bold;
+  color: #333;
+  margin-right: 90px;
+  font-size: larger; /* Shift end date to the left, adjust based on border width */
+}
+
+/* Dot icon for tasks */
+.timeline-icon.task-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff; /* Text color for task icon, if needed */
+  font-size: 0.9em; /* Reduced font size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Status color for completed tasks */
+.task-icon.completed {
+  background-color: #28a745; /* Green */
+}
+
+/* Status color for tasks in progress */
+.task-icon.in-progress {
+  background-color: #ffc107; /* Yellow */
+}
+
+/* Status color for tasks not started */
+.task-icon.not-started {
+  background-color: #dc3545; /* Red */
+}

@@ -1,0 +1,140 @@
+.edit-project-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  form > div {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input[type="text"], input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .add-button, .save-button, .delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .add-button, .save-button {
+    background-color: #007bff;
+    color: white;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-button:hover, .save-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
+  .milestone, .task {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .milestone-header, .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  h3 {
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  h5 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #007bff;
+  }
+
+  .suggestions-list {
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #ebba92;
+    position: absolute;
+    z-index: 1000;
+    width: 47%;
+    box-sizing: border-box;
+  }
+  
+  .suggestions-list li {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.3s ease;
+  }
+  
+  .suggestions-list li:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .suggestions-list li.active {
+    background-color: #e0e0e0;
+  }
+  
+  .suggestions-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .suggestions-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+  
+  .suggestions-list::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }
+  

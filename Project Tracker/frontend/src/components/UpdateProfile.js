@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import {jwtDecode} from 'jwt-decode';
-import { FaArrowLeft, FaUserCircle } from 'react-icons/fa';
+import { jwtDecode } from 'jwt-decode';
+import { FaArrowLeft, FaUserCircle, FaCheck, FaTimes } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/UpdateProfile.css';
 
 const UpdateProfile = () => {
@@ -11,9 +13,9 @@ const UpdateProfile = () => {
     const [userData, setUserData] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
-        username: '',
-        email: ''
+        username: ''
     });
+    const [usernameError, setUsernameError] = useState('');
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -32,8 +34,7 @@ const UpdateProfile = () => {
             setUserData(decoded);
             setFormData({
                 name: decoded.name,
-                username: decoded.username,
-                email: decoded.useremail
+                username: decoded.username
             });
         } catch (err) {
             navigate('/login');
@@ -54,10 +55,12 @@ const UpdateProfile = () => {
             ...formData,
             [name]: value,
         });
+        setUsernameError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const response = await fetch(`http://localhost:3000/users/${userData.id}`, {
                 method: 'PUT',
@@ -68,16 +71,37 @@ const UpdateProfile = () => {
                 body: JSON.stringify(formData),
             });
 
-            if (response.ok) {
-                alert('Profile updated successfully. Please log in again.');
+            if (response.status === 409) {
+                // Username is already taken
+                const data = await response.json();
+                setUsernameError(data.message);
+                toast.error(data.message, {
+                    className: 'custom-toast custom-toast-error',
+                    progressClassName: 'custom-toast-progress-error',
+                    icon: <FaTimes size={18} />
+                });
+            } else if (response.ok) {
+                toast.success('Profile updated successfully. Please log in again.', {
+                    className: 'custom-toast custom-toast-success',
+                    progressClassName: 'custom-toast-progress-success',
+                    icon: <FaCheck size={18} />
+                });
                 Cookies.remove('token');
                 navigate('/login');
             } else {
-                alert('Failed to update profile.');
+                toast.error('Failed to update profile.', {
+                    className: 'custom-toast custom-toast-error',
+                    progressClassName: 'custom-toast-progress-error',
+                    icon: <FaTimes size={18} />
+                });
             }
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Failed to update profile.');
+            toast.error('Failed to update profile.', {
+                className: 'custom-toast custom-toast-error',
+                progressClassName: 'custom-toast-progress-error',
+                icon: <FaTimes size={18} />
+            });
         }
     };
 
@@ -113,22 +137,24 @@ const UpdateProfile = () => {
                             value={formData.username}
                             onChange={handleInputChange}
                         />
-                    </div>
-                    <br />
-                    <div>
-                        <label htmlFor="email"><strong>Email:</strong></label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                        />
+                        {usernameError && <p className="error">{usernameError}</p>}
                     </div>
                     <br />
                     <button type="submit">Update</button>
                 </form>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 };

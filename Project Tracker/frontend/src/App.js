@@ -12,6 +12,9 @@ import ProofDetails from './components/ProofDetails';
 import PendingVerifications from './components/PendingVerifications';
 import CreateProject from './components/CreateProject';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
+import ExistingProject from './components/ExistingProject';
+import ProjectDetails from './components/ProjectDetails';
+import EditProjectDetails from './components/EditProjectDetails';
 
 
 function App() {
@@ -31,6 +34,9 @@ function App() {
         <Route path="/create-project" element={<CreateProject />} />
         <Route path="*" element={<Navigate to="/LandingPage" />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/existing-project/:username" element={<ExistingProject />} />
+        <Route path="/project/:projectname" element={<ProjectDetails />} />
+        <Route path="/project/:projectname/edit" element={<EditProjectDetails />} />
         {/* Other routes can be added here */}
       </Routes>
     </Router>
