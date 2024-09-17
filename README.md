@@ -1,4 +1,3 @@
-# Project-Planner
 # Project Tracker
 
 Project Tracker is a comprehensive web application designed to streamline project management. Built by a talented 5-member team, this tool offers robust features for efficient task tracking and project oversight.
