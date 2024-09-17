@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { FaArrowLeft } from "react-icons/fa";
 import "../styles/UploadProof.css";
 
@@ -16,8 +16,8 @@ const UploadProof = () => {
   const [selectedTaskEndDate, setSelectedTaskEndDate] = useState("");
   const [timeLeft, setTimeLeft] = useState("");
 
-  const setTimeLine = (date) =>{
-      if (date) {
+  const setTimeLine = (date) => {
+    if (date) {
       const endDate = new Date(date);
       const currentDate = new Date();
       const timeDiff = endDate - currentDate;
@@ -40,7 +40,7 @@ const UploadProof = () => {
     } else {
       setTimeLeft("");
     }
-  } ;
+  };
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -52,6 +52,13 @@ const UploadProof = () => {
     try {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
+
+      if (decoded.usertype !== 2) {
+        alert("Please login again, for usertype confirmation");
+        Cookies.remove("token");
+        navigate("/login");
+        return;
+      }
 
       if (decoded.exp < currentTime) {
         alert("Session expired. Please login again.");
@@ -78,7 +85,6 @@ const UploadProof = () => {
     setSelectedTaskName(atob(taskName || ""));
     setSelectedTaskEndDate(atob(taskDueDate || ""));
     setTimeLine(atob(taskDueDate));
-
   }, [username, navigate]);
 
   const fetchTasks = async (userId) => {
@@ -148,18 +154,36 @@ const UploadProof = () => {
   };
 
   return (
-    <div className="wrapper">
-      <div className="back-arrow" onClick={handleBackClick}>
+    <div className="wrapper p-6 bg-gray-100 min-h-screen">
+      <div
+        className="back-arrow cursor-pointer mb-4 text-blue-500"
+        onClick={handleBackClick}
+      >
         <FaArrowLeft size={30} />
       </div>
-      <div className="upload-proof">
-        <h2>
+      <div className="upload-proof bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-4">
           Upload Completion Proof{" "}
           {selectedTaskName && `for ${selectedTaskName}`}
         </h2>
-        <form onSubmit={handleSubmit}>
-          <input type="file" onChange={handleFileChange} required />
-          <select value={selectedTaskId} onChange={handleTaskChange} required>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            required
+            className="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-blue-50 file:text-blue-700
+            hover:file:bg-blue-100"
+          />
+          <select
+            value={selectedTaskId}
+            onChange={handleTaskChange}
+            required
+            className="block w-full p-2 border border-gray-300 rounded-md"
+          >
             <option value="" className="taskName">
               Select Task
             </option>
@@ -167,7 +191,8 @@ const UploadProof = () => {
               <option
                 key={task.TaskId}
                 value={task.TaskId}
-                data-duedate={task.EndDate}>
+                data-duedate={task.EndDate}
+              >
                 {task.TaskName}
               </option>
             ))}
@@ -180,13 +205,17 @@ const UploadProof = () => {
               </p>
               <p
                 style={{
-                  color:new Date(selectedTaskEndDate) < new Date()? "red" : "green",
-                }}>
+                  color: new Date(selectedTaskEndDate) < new Date() ? "red" : "green",
+                }}
+              >
                 <b>Time Left:</b> {timeLeft}
               </p>
             </>
           )}
-          <button type="submit" className="uploadButton">
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
             Upload
           </button>
         </form>

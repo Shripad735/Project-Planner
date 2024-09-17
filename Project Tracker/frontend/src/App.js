@@ -10,12 +10,12 @@ import UploadProof from './components/UploadProof';
 import TaskCards from './components/TaskCards';
 import ProofDetails from './components/ProofDetails';
 import PendingVerifications from './components/PendingVerifications';
-import CreateProject from './components/CreateProject';
-import ForgotPasswordPage from './components/ForgotPasswordPage';
+import Notifications from './components/Notification';
 import ExistingProject from './components/ExistingProject';
 import ProjectDetails from './components/ProjectDetails';
 import EditProjectDetails from './components/EditProjectDetails';
-
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+import CreateProject from './components/CreateProject';
 
 function App() {
   return (
@@ -31,12 +31,14 @@ function App() {
         <Route path="/tasksAssigned/:username" element={<TaskCards />} />
         <Route path="/proof-details/:taskId" element={<ProofDetails />} />
         <Route path="/pending-verifications/:username" element={<PendingVerifications />} />
-        <Route path="/create-project" element={<CreateProject />} />
-        <Route path="*" element={<Navigate to="/LandingPage" />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/notifications/:username" element={<Notifications />} />
         <Route path="/existing-project/:username" element={<ExistingProject />} />
         <Route path="/project/:projectname" element={<ProjectDetails />} />
         <Route path="/project/:projectname/edit" element={<EditProjectDetails />} />
+        <Route path="/create-project/:username" element={<CreateProject />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="*" element={<Navigate to="/LandingPage" />} />
         {/* Other routes can be added here */}
       </Routes>
     </Router>

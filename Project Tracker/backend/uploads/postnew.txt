@@ -1,0 +1,183 @@
+app.post('/projects/new', (req, res) => {
+  const { projectID, milestones } = req.body;
+
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Error starting transaction:', err);
+      return res.status(500).json({ error: 'Error starting transaction' });
+    }
+
+    // Fetch existing milestones
+    const getExistingMilestonesQuery = `SELECT milestoneid, milestonename, description, startdate, enddate FROM milestones WHERE projectid = ?`;
+    db.query(getExistingMilestonesQuery, [projectID], (err, existingMilestones) => {
+      if (err) {
+        console.error('Error fetching existing milestones:', err);
+        return db.rollback(() => {
+          res.status(500).json({ error: 'Error fetching existing milestones' });
+        });
+      }
+
+      const existingMilestoneMap = new Map();
+      existingMilestones.forEach(m => existingMilestoneMap.set(m.milestoneid, m));
+      //console.log('existingMilestones',existingMilestones);
+
+      const milestonesToDelete = new Set(existingMilestoneMap.keys());
+      console.log('milestonesToDelete',milestonesToDelete);
+      const milestoneOperations = milestones.map(milestone => {
+        const matchingMilestone = Array.from(existingMilestoneMap.values()).find(m => m.milestonename === milestone.name);
+        
+        if (matchingMilestone) {
+          milestonesToDelete.delete(matchingMilestone.milestoneid);
+          
+          const updateMilestoneQuery = `UPDATE milestones SET milestonename = ?, description = ?, startdate = ?, enddate = ? WHERE milestoneid = ?`;
+          return new Promise((resolve, reject) => {
+            db.query(updateMilestoneQuery, [milestone.name, milestone.description, milestone.startDate, milestone.endDate, matchingMilestone.milestoneid], err => {
+              if (err) {
+                return reject(err);
+              }
+              updateTasks(matchingMilestone.milestoneid, milestone.tasks)
+                .then(resolve)
+                .catch(reject);
+            });
+          });
+        } else {
+          const insertMilestoneQuery = `INSERT INTO milestones (milestoneid, projectid, seq, milestonename, description, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, 'Not Started')`;
+          return new Promise((resolve, reject) => {
+            db.query(insertMilestoneQuery, [projectID, milestone.name, milestone.description, milestone.startDate, milestone.endDate], (err, result) => {
+              if (err) {
+                return reject(err);
+              }
+              const milestoneId = result.insertId;
+              insertTasks(milestoneId, milestone.tasks)
+                .then(resolve)
+                .catch(reject);
+            });
+          });
+        }
+      });
+
+      Promise.all(milestoneOperations)
+        .then(() => {
+          if (milestonesToDelete.size > 0) {
+            const deleteMilestonesQuery = `DELETE FROM milestones WHERE milestoneid IN (?)`;
+            db.query(deleteMilestonesQuery, [[...milestonesToDelete]], err => {
+              if (err) {
+                console.error('Error deleting milestones:', err);
+                return db.rollback(() => {
+                  res.status(500).json({ error: 'Error deleting milestones' });
+                });
+              }
+              commitTransaction();
+            });
+          } else {
+            commitTransaction();
+          }
+        })
+        .catch(err => {
+          console.error('Error processing milestones:', err);
+          return db.rollback(() => {
+            res.status(500).json({ error: 'Error processing milestones' });
+          });
+        });
+
+      function updateTasks(milestoneId, tasks) {
+        return new Promise((resolve, reject) => {
+          const getExistingTasksQuery = `SELECT taskid, taskname, description, assignedto, startdate, enddate FROM tasks WHERE milestoneid = ?`;
+          db.query(getExistingTasksQuery, [milestoneId], (err, existingTasks) => {
+            if (err) {
+              return reject(err);
+            }
+
+            const existingTaskMap = new Map();
+            existingTasks.forEach(t => existingTaskMap.set(t.taskid, t));
+
+            const tasksToDelete = new Set(existingTaskMap.keys());
+            const taskOperations = tasks.map(task => {
+              getIdByEmail(task.assignedTo, (err, assignedUserId) => {
+                if (err) {
+                  return reject(err);
+                }
+
+                const matchingTask = Array.from(existingTaskMap.values()).find(t => t.taskname === task.name);
+                if (matchingTask) {
+                  tasksToDelete.delete(matchingTask.taskid);
+
+                  const updateTaskQuery = `UPDATE tasks SET taskname = ?, description = ?, assignedto = ?, startdate = ?, enddate = ? WHERE taskid = ?`;
+                  return new Promise((resolve, reject) => {
+                    db.query(updateTaskQuery, [task.name, task.description, assignedUserId, task.startDate, task.endDate, matchingTask.taskid], err => {
+                      if (err) {
+                        return reject(err);
+                      }
+                      resolve();
+                    });
+                  });
+                } else {
+                  const insertTaskQuery = `INSERT INTO tasks (taskid, milestoneid, seq, taskname, description, assignedto, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, ?, 'Not Started')`;
+                  return new Promise((resolve, reject) => {
+                    db.query(insertTaskQuery, [milestoneId, task.name, task.description, assignedUserId, task.startDate, task.endDate], err => {
+                      if (err) {
+                        return reject(err);
+                      }
+                      resolve();
+                    });
+                  });
+                }
+              });
+            });
+
+            Promise.all(taskOperations)
+              .then(() => {
+                if (tasksToDelete.size > 0) {
+                  const deleteTasksQuery = `DELETE FROM tasks WHERE taskid IN (?)`;
+                  db.query(deleteTasksQuery, [[...tasksToDelete]], err => {
+                    if (err) {
+                      return reject(err);
+                    }
+                    resolve();
+                  });
+                } else {
+                  resolve();
+                }
+              })
+              .catch(reject);
+          });
+        });
+      }
+
+      function insertTasks(milestoneId, tasks) {
+        return Promise.all(
+          tasks.map(task => {
+            return new Promise((resolve, reject) => {
+              getIdByEmail(task.assignedTo, (err, assignedUserId) => {
+                if (err) {
+                  return reject(err);
+                }
+
+                const insertTaskQuery = `INSERT INTO tasks (taskid, milestoneid, seq, taskname, description, assignedto, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, ?, 'Not Started')`;
+                db.query(insertTaskQuery, [milestoneId, task.name, task.description, assignedUserId, task.startDate, task.endDate], err => {
+                  if (err) {
+                    return reject(err);
+                  }
+                  resolve();
+                });
+              });
+            });
+          })
+        );
+      }
+
+      function commitTransaction() {
+        db.commit(err => {
+          if (err) {
+            console.error('Error committing transaction:', err);
+            return db.rollback(() => {
+              res.status(500).json({ error: 'Error committing transaction' });
+            });
+          }
+          console.log('Milestones and tasks added/updated successfully');
+          res.status(201).json({ message: 'Milestones and tasks added/updated successfully' });
+        });
+      }
+    });
+  });
+});

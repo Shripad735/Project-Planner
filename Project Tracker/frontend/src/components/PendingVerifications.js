@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import {jwtDecode} from 'jwt-decode';
 import { FaArrowLeft } from 'react-icons/fa';
 import '../styles/PendingVerifications.css';
 
@@ -16,6 +17,14 @@ const PendingVerifications = () => {
       return;
     }
 
+    const decoded = jwtDecode(token);
+    if(decoded.usertype !== 1) {
+      alert('Please login again, for usertype confirmation');
+      Cookies.remove('token');
+      navigate('/login');
+      return;
+    } 
+    
     fetch(`http://localhost:3000/pendingVerifications`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -39,6 +48,9 @@ const PendingVerifications = () => {
   if (verifications.length === 0) {
     return(
         <div className='wrapper'>
+        <div className="back-arrow" onClick={handleBackClick}>
+                <FaArrowLeft size={30} />
+        </div>
         <div><h1>No pending verifications</h1></div>
         </div>
     ) ;

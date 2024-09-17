@@ -73,3 +73,18 @@
   height: 150px; /* Adjust as needed */
   margin-left: 10px; /* Adjust this value to control spacing */
 }
+
+.delete-button {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin-left: 10px;
+  padding: 5px;
+  width: 20%;
+}
+
+.delete-button:hover {
+  color: darkred;
+}

@@ -1,4 +1,10 @@
 /* Add styles for the delete button */
+.wrapper{
+  background-color: #f6e099;
+  width: 100%;
+  height: 100%;
+}
+
 .delete-button {
   background-color: #f44336; /* Red background */
   color: white;
@@ -14,13 +20,13 @@
 }
 
 /* Additional styles for project, milestones, and tasks */
-.create-project-container {
+/* .create-project-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  background-color: #f0f0f0;
-}
+  background: linear-gradient(135deg, #dea215 0%, #fcaa25 50%,#cb6b11 100%);
+} */
 
 .create-project {
   width: 100%;

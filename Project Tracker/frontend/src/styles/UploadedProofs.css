@@ -1,0 +1,39 @@
+.uploaded-proofs {
+    padding: 20px;
+}
+
+.uploaded-proofs table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.uploaded-proofs th, .uploaded-proofs td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.uploaded-proofs th {
+    background-color: #f2f2f2;
+}
+
+.uploaded-proofs td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.uploaded-proofs button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.uploaded-proofs button:nth-child(1) {
+    background-color: #28a745; /* green for approve */
+}
+
+.uploaded-proofs button:nth-child(2) {
+    background-color: #dc3545; /* red for reject */
+}

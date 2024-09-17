@@ -1,0 +1,49 @@
+CREATE TRIGGER `after_task_insert_notify` AFTER INSERT ON `tasks`
+ FOR EACH ROW BEGIN
+    INSERT INTO NotificationsSent (notnid, taskid, userid, notn, viewed, sentat)
+    VALUES (NULL, NEW.taskid, NEW.assignedto, 1, FALSE, NOW());
+END
+
+CREATE TRIGGER `after_task_update_notify_status` AFTER UPDATE ON `tasks`
+ FOR EACH ROW BEGIN
+    IF NEW.Status = 'In Progress' AND OLD.Status = 'Not Started' THEN
+        INSERT INTO NotificationsSent (taskid, userid, notn, viewed, sentat)
+        VALUES (NEW.TaskID, NEW.AssignedTo, 6, FALSE, NOW());
+    END IF;
+
+    IF NEW.Status = 'Overdue' AND OLD.Status != 'Overdue' THEN
+        INSERT INTO NotificationsSent (taskid, userid, notn, viewed, sentat)
+        VALUES (NEW.TaskID, NEW.AssignedTo, 5, FALSE, NOW());
+    END IF;
+END
+
+CREATE TRIGGER `before_task_due_reminder` BEFORE UPDATE ON `tasks`
+ FOR EACH ROW BEGIN
+    DECLARE reminderDate DATE;
+    SET reminderDate = DATE_SUB(NEW.EndDate, INTERVAL 3 DAY);
+
+    IF NEW.Status != 'Completed' AND reminderDate = CURDATE() THEN
+        INSERT INTO NotificationsSent (taskid, userid, notn, viewed, sentat)
+        VALUES (NEW.TaskID, NEW.AssignedTo, 7, FALSE, NOW());
+    END IF;
+END
+
+CREATE TRIGGER `check_taskassignedto_user` BEFORE INSERT ON `tasks`
+ FOR EACH ROW BEGIN
+    DECLARE userType INT;
+    SELECT UserType INTO userType FROM Users WHERE UserID = NEW.AssignedTo;
+    IF userType != 2 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign the task to this user';
+    END IF;
+END
+
+CREATE TRIGGER `check_taskassignedto_user_up` BEFORE UPDATE ON `tasks`
+ FOR EACH ROW BEGIN
+    DECLARE userType INT;
+    SELECT UserType INTO userType FROM Users WHERE UserID = NEW.AssignedTo;
+    IF userType != 2 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign the task to this user';
+    END IF;
+END

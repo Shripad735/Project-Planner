@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import '../styles/LoginPage.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('http://localhost:3000/loginMe', {
         method: 'POST',
@@ -24,9 +26,13 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set('token', data.token, { expires: 0.5 }); 
-        alert('Login successful!');
-        navigate(`/dashboard/${username}`); 
+        Cookies.set('token', data.token, { expires: 0.5 });
+        setIsToastVisible(true);
+        toast.success('Login successful!', {
+          className: 'custom-toast',
+          autoClose: 2000,
+          onClose: () => navigate(`/dashboard/${username}`),
+        });
       } else {
         setError(data.message || 'Login failed');
       }
@@ -35,11 +41,22 @@ const LoginPage = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (isToastVisible) {
+        navigate(`/dashboard/${username}`);
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
+
   return (
-    <div className="wrapper">
-      <div className="container">
-        <h2>Login to Project Tracker</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="min-h-screen flex items-center justify-center bg-customYellow">
+      <ToastContainer />
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login to Project Tracker</h2>
+        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-4">
           <input
             type="text"
             name="username"
@@ -47,6 +64,7 @@ const LoginPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
           <input
             type="password"
@@ -55,16 +73,17 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
-          <button type="submit" style={{ marginLeft: '0px' }}>Login</button>
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Login</button>
         </form>
-        <Link to="/forgot-password" className="forgot-password-link">
-          Forgot Password?
-        </Link>
-        <Link to="/register" className="register-link">
-          Don't have an account? Register here
-        </Link>
-        {error && <p className="error">{error}</p>}
+        <div className="mt-4 text-center">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline">Forgot Password?</Link>
+        </div>
+        <div className="mt-2 text-center">
+          <Link to="/register" className="text-blue-600 hover:underline">Don't have an account? Register here</Link>
+        </div>
+        {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
       </div>
     </div>
   );

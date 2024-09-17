@@ -34,23 +34,44 @@ const Dashboard = () => {
                 return;
             }
 
-            setName(decoded.username);
-            setUsertype(decoded.usertype);
-            setNotificationCount(3); // Set your actual notification count here
+            setName(decoded.name);
+            setUsertype(decoded.usertype)
+            fetchNotificationCount(decoded.id);
+
         } catch (err) {
             navigate('/login');
         }
     }, [username, navigate]);
 
+
+    const fetchNotificationCount = async (userId) => {
+        try {
+          const response = await fetch(`http://localhost:3000/notifications/${userId}`, {
+            headers: {
+              'Authorization': `Bearer ${Cookies.get('token')}`
+            }
+          });
+          const data = await response.json();
+          setNotificationCount(data.length);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
     if (usertype === 1) {
         return (
             <div className="dashboard-container">
-                <Navbar username={name} notificationCount={notificationCount} />
+                <Navbar username={name} notificationCount={notificationCount} setNotificationCount={setNotificationCount} />
                 <div className="dashboard">
-                    <h2>Welcome to Your Dashboard</h2>
+                    {/* use tailwindcss */}
+                    <h1 className='text-3xl font-bold text-gray-800 mb-4 font-sans'>Welcome, {name}!</h1>
+                    <h2 className='text-2xl font-semibold text-gray-800 mb-4 '>What would you like to do today?</h2>
+                    <div></div>
+                    <div></div>
+                    <br></br>
                     <div className="option-cards">
-                        <OptionCard title="Create New Project" description="Start a new project and track its progress." path={`/create-project`}/>
-                        <OptionCard title="Manage Existing Projects" description="View and manage your existing projects." path={`/existing-project/${username}`} />
+                        <OptionCard title="Create New Project" description="Start a new project and track its progress." path={`/create-project/${username}`}/>
+                        <OptionCard title="Manage Existing Projects" description="View and manage your existing projects." path={`/existing-project/${username}`} />
                         <OptionCard title="Pending Verification of Tasks" description="Verify tasks that are pending approval." path={`/pending-verifications/${username}`}/>
                     </div>
                 </div>
@@ -59,9 +80,10 @@ const Dashboard = () => {
     } else if (usertype === 2) {
         return (
             <div className="dashboard-container">
-                <Navbar username={name} notificationCount={notificationCount} />
+                <Navbar username={name} notificationCount={notificationCount} setNotificationCount={setNotificationCount} />
                 <div className="dashboard">
-                    <h2>Welcome to Your Dashboard</h2>
+                    <h1 className='text-3xl font-bold text-gray-800 mb-4 font-sans'>Welcome to Your Dashboard</h1>
+                    <br></br>
                     <div className="option-cards">
                         <OptionCard title="View Assigned Tasks" description="View all deliverables in a single place" path={`/tasksAssigned/${username}`} />
                         <OptionCard title="Submit Completion Proofs" description="Make submissions for your completed tasks" path={`/upload-proof/${username}`} />
@@ -75,3 +97,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

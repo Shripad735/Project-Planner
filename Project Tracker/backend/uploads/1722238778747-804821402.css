@@ -1,0 +1,27 @@
+.wrapper {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFA07A; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.comp{
+    width: 500px;
+    height: 220px;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    position: relative;
+    overflow: auto;
+}
+
+.downloadButton{
+    margin-top: 15px;
+    width: 110px;
+    
+}

@@ -1,0 +1,85 @@
+.notifications {
+    max-width: fit-content;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .notifications h2 {
+    margin-top: 0;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .notifications ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px; /* Adjust height as needed */
+    overflow-y: auto;
+    max-width: 200px;
+  }
+  
+  .notifications li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .notifications li:last-child {
+    border-bottom: none;
+  }
+  
+  .notifications span {
+    cursor: default;
+    color: #333;
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .notifications button {
+    background-color: #cf537c;
+    margin-left: 100px;
+    width: 70px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    max-width: 100px;
+    margin-top: 10px; /* Separate button from text */
+    font-size: small;
+  }
+  
+  .notifications button:hover {
+    background-color: #c94141;
+  
+  }
+  
+  .dismiss-all-button {
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #337ab7;
+    color: #fff;
+    border: none;
+  }
+  
+  .dismiss-all-button:hover {
+    background-color: #23527c;
+  }
+  
+  .dismissAll{
+    
+    width: 90px;
+    margin-left: 60px;
+  
+  }

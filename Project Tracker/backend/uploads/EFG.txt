@@ -1,0 +1,61 @@
+app.post('/projects/new', verifyToken, (req, res) => {
+  const { projectID, milestones } = req.body;
+
+  // First, delete tasks associated with the project
+  const deleteTasksQuery = `DELETE FROM tasks WHERE MilestoneID IN (SELECT MilestoneID FROM milestones WHERE projectid = ?)`;
+  db.query(deleteTasksQuery, [projectID], (err) => {
+    if (err) {
+      console.error('Error deleting tasks:', err);
+      return res.status(500).json({ error: 'Error deleting tasks' });
+    }
+
+    // Then, delete milestones associated with the project
+    const deleteMilestonesQuery = `DELETE FROM milestones WHERE projectid = ?`;
+    db.query(deleteMilestonesQuery, [projectID], (err) => {
+      if (err) {
+        console.error('Error deleting milestones:', err);
+        return res.status(500).json({ error: 'Error deleting milestones' });
+      }
+
+      // Insert new milestones
+      for (let i = 0; i < milestones.length; i++) {
+        const milestone = milestones[i];
+        const milestoneQuery = `INSERT INTO milestones (milestoneid, projectid, seq, milestonename, description, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, 'Not Started')`;
+        db.query(milestoneQuery, [projectID, milestone.name, milestone.description, milestone.startDate, milestone.endDate], (err, result) => {
+          if (err) {
+            console.error('Error inserting milestone:', err);
+            return res.status(500).json({ error: 'Error inserting milestone' });
+          }
+
+          const milestoneId = result.insertId;
+          console.log(`Inserted milestone ID: ${milestoneId}`);
+
+          // Insert tasks for the milestone
+          const tasks = milestone.tasks || [];
+          for (let j = 0; j < tasks.length; j++) {
+            const task = tasks[j];
+            getIdByEmail(task.assignedTo, (err, assignedUserId) => {
+              if (err) {
+                console.error('Error getting user ID by email:', err);
+                return res.status(500).json({ error: 'Error getting user ID by email' });
+              }
+
+
+              const taskQuery = `INSERT INTO tasks (taskid, milestoneid, seq, taskname, description, assignedto, startdate, enddate, status) VALUES (NULL, ?, NULL, ?, ?, ?, ?, ?, 'Not Started')`;
+              db.query(taskQuery, [milestoneId, task.name, task.description, assignedUserId, task.startDate, task.endDate], (err) => {
+                if (err) {
+                  console.error('Error inserting task:', err);
+                  return res.status(500).json({ error: 'Error inserting task' });
+                }
+                console.log(`Inserted task for milestone ID ${milestoneId}`);
+              });
+            });
+          }
+        });
+      }
+      // Once all operations are done
+      console.log('Milestones and tasks added successfully');
+      res.status(201).json({ message: 'Milestones and tasks added successfully' });
+    });
+  });
+});

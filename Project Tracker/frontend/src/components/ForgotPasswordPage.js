@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/LoginPage.css';
+import { Link, useNavigate } from 'react-router-dom';
+import 'tailwindcss/tailwind.css';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,6 +73,11 @@ const ForgotPasswordPage = () => {
     setMessage('');
     setError('');
 
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:3000/resetPassword', {
         method: 'POST',
@@ -83,6 +91,9 @@ const ForgotPasswordPage = () => {
 
       if (response.ok) {
         setMessage('Password reset successfully. You can now login with your new password.');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
         setError(data.message || 'Failed to reset password. Please try again.');
       }
@@ -92,11 +103,11 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="wrapper">
-      <div className="container">
-        <h2>Forgot Password</h2>
+    <div className="min-h-screen flex items-center justify-center bg-customYellow">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Forgot Password</h2>
         {!isOtpSent && (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="email"
               name="email"
@@ -104,12 +115,13 @@ const ForgotPasswordPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button type="submit" style={{ marginLeft: '0px' }}>Send OTP</button>
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Send OTP</button>
           </form>
         )}
         {isOtpSent && !isOtpVerified && (
-          <form onSubmit={handleVerifyOtp}>
+          <form onSubmit={handleVerifyOtp} className="space-y-4">
             <input
               type="text"
               name="otp"
@@ -117,12 +129,13 @@ const ForgotPasswordPage = () => {
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button type="submit" style={{ marginLeft: '0px' }}>Verify OTP</button>
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Verify OTP</button>
           </form>
         )}
         {isOtpVerified && (
-          <form onSubmit={handleResetPassword}>
+          <form onSubmit={handleResetPassword} className="space-y-4">
             <input
               type="password"
               name="newPassword"
@@ -130,15 +143,23 @@ const ForgotPasswordPage = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button type="submit" style={{ marginLeft: '0px' }}>Reset Password</button>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Reset Password</button>
           </form>
         )}
-        <Link to="/login" className="login-link">
-          Back to Login
-        </Link>
-        {message && <p className="success">{message}</p>}
-        {error && <p className="error">{error}</p>}
+        <Link to="/login" className="block mt-4 text-center text-blue-600 hover:underline">Back to Login</Link>
+        {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
+        {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
       </div>
     </div>
   );

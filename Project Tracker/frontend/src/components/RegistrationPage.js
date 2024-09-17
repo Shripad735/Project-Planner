@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Registration.css';
+import 'tailwindcss/tailwind.css';
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
-    mobile: '',
     username: '',
     password: '',
     confirm_password: '',
@@ -64,90 +63,88 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="wrapper">
-     <div className="container">
-      <h2>Register for Project Tracker</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="full_name"
-          placeholder="Full Name"
-          required
-          value={formData.full_name}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          required
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <input
-          type="tel"
-          name="mobile"
-          placeholder="Mobile"
-          required
-          value={formData.mobile}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          required
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Create Password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="confirm_password"
-          placeholder="Confirm Password"
-          required
-          value={formData.confirm_password}
-          onChange={handleChange}
-        />
+    <div className="min-h-screen flex items-center justify-center bg-customYellow">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Register for Project Tracker</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="full_name"
+            placeholder="Full Name"
+            required
+            value={formData.full_name}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Create Password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+          <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            required
+            value={formData.confirm_password}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
 
-        <div className="user-type-selection">
-          <label className="user-type-option">
-            <input
-              type="radio"
-              name="user_type"
-              value="ProjectVisionary"
-              required
-              checked={formData.user_type === 'ProjectVisionary'}
-              onChange={handleChange}
-            />
-            Project Visionary
-          </label>
-          <label className="user-type-option">
-            <input
-              type="radio"
-              name="user_type"
-              value="Taskmaster"
-              required
-              checked={formData.user_type === 'Taskmaster'}
-              onChange={handleChange}
-            />
-            Taskmaster
-          </label>
-        </div>
+          <div className="flex justify-around mt-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="user_type"
+                value="Taskmaster"
+                required
+                checked={formData.user_type === 'Taskmaster'}
+                onChange={handleChange}
+                className="form-radio text-blue-600"
+              />
+              <span>Project Creator</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="user_type"
+                value="ProjectVisionary"
+                required
+                checked={formData.user_type === 'ProjectVisionary'}
+                onChange={handleChange}
+                className="form-radio text-blue-600"
+              />
+              <span>Project Completer</span>
+            </label>
+          </div>
 
-        <button type="submit" style = {{marginLeft: '0px'}}>Register</button>
-      </form>
-      <a href="/login" className="login-link">Already have an account? Login here</a>
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Register</button>
+        </form>
+        <a href="/login" className="block mt-4 text-center text-blue-600 hover:underline">Already have an account? Login here</a>
+      </div>
     </div>
-    </div>
-    
   );
 };
 
