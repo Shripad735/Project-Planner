@@ -9,6 +9,11 @@ module.exports = {
       extend: {
         colors: {
           customYellow: '#f6e099',
+          customPink: 'rgb(238,174,202)',
+          customBlue: 'rgb(56,138,235)'
+        },
+        backgroundImage: {
+          'pink-blue-radial': 'radial-gradient(circle, rgba(238,174,202,1) 13%, rgba(56,138,235,1) 98%)'
         },
         fontFamily: {
           sans: ['Inter', 'sans-serif'],

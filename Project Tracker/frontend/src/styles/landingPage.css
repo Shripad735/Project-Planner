@@ -11,6 +11,8 @@
   
   .landing-page h1 {
     font-size: 3.5em;
+    font-weight: bolder;
+    color: rgb(152, 234, 127);
     margin: 0%;
       overflow: hidden; 
       white-space: nowrap; 
@@ -31,6 +33,7 @@
   
   
   .landing-page p {
+    font-weight: bold;
     font-size: 2em;
     margin: 15px;
     margin-bottom: 30px;

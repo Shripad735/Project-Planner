@@ -1,5 +1,9 @@
 /* General styles for body */
 
+body {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    font-family: Arial, sans-serif;
+}
 
 .wrapper {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

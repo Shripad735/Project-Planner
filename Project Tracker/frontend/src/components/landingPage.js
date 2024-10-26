@@ -54,7 +54,7 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page gradient-background">
-      <h1>Welcome to Project Tracker</h1>
+      <h1>Welcome to Project Tracker !</h1>
       <p>Stay on Track, Every Step of the Way!</p>
       
       <div className="features">
